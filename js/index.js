@@ -177,7 +177,7 @@ const playSong = (code) => {
 };
 
 /////-------FETCH ALBUMS------/////
-const fetchAlbum = async (albumCode) => {
+/* const fetchAlbum = async (albumCode) => {
   const res = await fetch(
     `https://api.spotify.com/v1/artists/${albumCode}/albums`,
     {
@@ -191,10 +191,10 @@ const fetchAlbum = async (albumCode) => {
   );
   const data = await res.json();
   return data;
-};
+}; */
 
 ///----PRINT FAV ARTISTS-----///
-const renderFavArtists = () => {
+/* const renderFavArtists = () => {
   favArt.forEach((artist) => {
     let div = document.createElement("div");
     let divClasses = [
@@ -220,10 +220,10 @@ const renderFavArtists = () => {
 
     artistContainer.appendChild(div);
   });
-};
+}; */
 
 ///----PRINT FAV ARTISTS ALBUMS-----///
-const renderFavArtistsAlbums = (artSelected) => {
+/* const renderFavArtistsAlbums = (artSelected) => {
   let artistTitle = document.querySelector(".artist-title");
   let jumboFavArt = document.querySelector(".jumbotron-art-fav");
   artistTitle.innerHTML = artSelected.name;
@@ -253,7 +253,7 @@ const renderFavArtistsAlbums = (artSelected) => {
 
     albumsFav.appendChild(div);
   });
-};
+}; */
 
 ////////Albums Logic////////////
 
@@ -311,9 +311,61 @@ const Album = {
   },
 };
 
+const Artist = {};
+
+//////FETCH API/////////
+const loadList = function (artist) {
+  console.log("load list called");
+  fetch(`https://rapidapi.p.rapidapi.com/search?q=${artist}`, {
+    method: "GET",
+    headers: {
+      "x-rapidapi-key": "f8be2f0c65mshfad5043cb400d5dp12eb36jsn70f4e3e3750f",
+      "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+    },
+  })
+    .then((response) => response.json())
+    .then((parsedJSON) => {
+      console.log(parsedJSON);
+      Artist = parsedJSON;
+      const array = [];
+      const albumCover = document.querySelector(".album-cover");
+      const playlist = document.querySelector(".list");
+      parsedJSON.data.forEach((element) => {
+        let li = `
+                <li class="d-flex  mb-3 justify-content-between" style="cursor:pointer">
+                    <div class="d-flex flex-column">
+                        <span class='song-title'><i class="fa fa-music mr-2" ></i>${
+                          element.title
+                        }</span>
+                    
+                        <span class="ml-4 pt-0" style="color:#93A0B0" >${
+                          element.artist.name
+                        }</span>
+                    </div>
+                        <span class="mr-3">${element.duration / 100}</span>
+                </li>`;
+
+        array.push(li);
+      });
+      playlist.innerHTML = array.join("");
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+const loadAlbums = function () {
+  Album.forEach(element) 
+  }
+}
+
 // ON WINDOW LOAD
 
 window.onload = function () {
+  loadList("queen");
+  loadList("metallica");
+  loadList("eminem");
+
   /////////---------MOBILE NAV TOGGLE IN INDEX----------//////////////
   hamburger?.addEventListener("click", displayMobileMenu);
 
