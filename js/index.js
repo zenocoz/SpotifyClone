@@ -311,11 +311,8 @@ const Album = {
   },
 };
 
-const Artist = {};
-
 //////FETCH API/////////
 const loadList = function (artist) {
-  console.log("load list called");
   fetch(`https://rapidapi.p.rapidapi.com/search?q=${artist}`, {
     method: "GET",
     headers: {
@@ -326,44 +323,44 @@ const loadList = function (artist) {
     .then((response) => response.json())
     .then((parsedJSON) => {
       console.log(parsedJSON);
-      Artist = parsedJSON;
       const array = [];
-      const albumCover = document.querySelector(".album-cover");
+      const row = document.querySelector(".fetch ");
       const playlist = document.querySelector(".list");
       parsedJSON.data.forEach((element) => {
-        let li = `
-                <li class="d-flex  mb-3 justify-content-between" style="cursor:pointer">
-                    <div class="d-flex flex-column">
-                        <span class='song-title'><i class="fa fa-music mr-2" ></i>${
-                          element.title
-                        }</span>
-                    
-                        <span class="ml-4 pt-0" style="color:#93A0B0" >${
-                          element.artist.name
-                        }</span>
+        let li = `<div class="col-6 col-md-4 col-lg-3 col-xl-2  text-center " style="margin-bottom: 2rem">
+        <div class="card card-spotify">
+            <div class="img-albums">
+                <div class="imgAlbum">
+                    <img src="${element.album.cover_xl}"
+                        class="card-img-top" alt="..." />
+                    <div class="play_container">
+                        <i class="far fa-play-circle playFav"></i>
                     </div>
-                        <span class="mr-3">${element.duration / 100}</span>
-                </li>`;
-
+                    <div class="hearth_container">
+                        <i class="far fa-heart hearthFav"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">${element.album.title} <br />(2011 Remaster)</h5>
+                <h6 class="card-title">1982</h6>
+            </div>
+        </div>
+    </div>`;
         array.push(li);
       });
-      playlist.innerHTML = array.join("");
+      row.innerHTML = array.join("");
     })
     .catch((err) => {
       console.error(err);
     });
 };
 
-const loadAlbums = function () {
-  Album.forEach(element) 
-  }
-}
-
 // ON WINDOW LOAD
 
 window.onload = function () {
   loadList("queen");
-  loadList("metallica");
+  loadList_("metallica");
   loadList("eminem");
 
   /////////---------MOBILE NAV TOGGLE IN INDEX----------//////////////
