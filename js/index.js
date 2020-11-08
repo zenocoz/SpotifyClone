@@ -320,6 +320,8 @@ const Album = {
 };
 
 //////FETCH API/////////
+let titles_array = [];
+let all_albums = [];
 
 const loadList = function (artist, row) {
   fetch(`https://rapidapi.p.rapidapi.com/search?q=${artist}`, {
@@ -355,6 +357,7 @@ const loadList = function (artist, row) {
             </div>
         </div>
     </div>`;
+        all_albums.push(element.album);
         array.push(li);
         global_cards_array.push(li);
       });
@@ -379,12 +382,48 @@ const randomizeArray = function (array) {
 };
 
 const listAlbums = () => {
-  rows = document.querySelectorAll(".rows");
+  //rows = document.querySelectorAll(".rows");
   rows.forEach((row) => (row.innerHTML = ""));
   let random_list = randomizeArray(global_cards_array).slice(0, 20);
   row.innerHTML = random_list.join("");
 };
 
+const showUniqueAlbums = () => {
+  rows.forEach((row) => (row.innerHTML = ""));
+  let flag = {};
+  let unique_albums = [];
+  all_albums.forEach((element) => {
+    if (!flag[element.id]) {
+      flag[element.id] = true;
+      unique_albums.push(element);
+    }
+  });
+  // console.log(flag);
+  console.log(unique_albums.length);
+  unique_albums.forEach((element) => {
+    let li = `<div class="col-6 col-md-4 col-lg-3 col-xl-2  text-center " style="margin-bottom: 2rem">
+    <div class="card card-spotify">
+        <div class="img-albums">
+            <div class="imgAlbum">
+                <img src="${element.cover_xl}"
+                    class="card-img-top" alt="..." />
+                <div class="play_container">
+                    <i class="far fa-play-circle playFav"></i>
+                </div>
+                <div class="hearth_container">
+                    <i class="far fa-heart hearthFav"></i>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">${element.title} <br />(2011 Remaster)</h5>
+            <h6 class="card-title">1982</h6>
+        </div>
+    </div>
+</div>`;
+    row.innerHTML += li;
+  });
+};
 // ON WINDOW LOAD
 window.onload = function () {
   loadList("davidbowie", row);
@@ -397,6 +436,12 @@ window.onload = function () {
   btn.innerText = "display random list";
   btn.addEventListener("click", listAlbums);
   listButton.appendChild(btn);
+
+  let unique_btn = document.createElement("button");
+  unique_btn.classList.add("btn", "btn-secondary");
+  unique_btn.innerText = "show Unique Albums";
+  unique_btn.addEventListener("click", showUniqueAlbums);
+  listButton.appendChild(unique_btn);
 
   /////////---------MOBILE NAV TOGGLE IN INDEX----------//////////////
   hamburger?.addEventListener("click", displayMobileMenu);
