@@ -17,6 +17,13 @@ const musicPlayer = document.getElementById("music-player");
 const favIcon = document.querySelector(".fav-icon");
 const artistContainer = document.querySelector(".artists__container");
 const albumsFav = document.querySelector(".albums-fav");
+//used in index page to fetch albums
+let rows = document.querySelectorAll(".rows");
+const row = document.querySelector(".fetch ");
+const row1 = document.querySelector(".fetch1 ");
+const row2 = document.querySelector(".fetch2");
+//list albums button on index fetch
+let listButton = document.querySelector(".list-button-wrapper");
 
 //VARIABLES
 let playLists = [];
@@ -26,6 +33,7 @@ let currentFavArtist = [];
 let current_album = {};
 let album_id = 0;
 let Album_instance = {};
+const global_cards_array = []; //used to fetch albums on loadList button
 
 let hamburger = document.querySelector(".navBar__hamburger");
 const indexNavbar = document.querySelector(".index__navBar");
@@ -312,7 +320,8 @@ const Album = {
 };
 
 //////FETCH API/////////
-const loadList = function (artist) {
+
+const loadList = function (artist, row) {
   fetch(`https://rapidapi.p.rapidapi.com/search?q=${artist}`, {
     method: "GET",
     headers: {
@@ -324,8 +333,7 @@ const loadList = function (artist) {
     .then((parsedJSON) => {
       console.log(parsedJSON);
       const array = [];
-      const row = document.querySelector(".fetch ");
-      const playlist = document.querySelector(".list");
+      //const playlist = document.querySelector(".list");
       parsedJSON.data.forEach((element) => {
         let li = `<div class="col-6 col-md-4 col-lg-3 col-xl-2  text-center " style="margin-bottom: 2rem">
         <div class="card card-spotify">
@@ -348,6 +356,7 @@ const loadList = function (artist) {
         </div>
     </div>`;
         array.push(li);
+        global_cards_array.push(li);
       });
       row.innerHTML = array.join("");
     })
@@ -356,12 +365,38 @@ const loadList = function (artist) {
     });
 };
 
-// ON WINDOW LOAD
+const randomizeArray = function (array) {
+  let a = array.length;
+  let temp;
+  let i;
+  while (a) {
+    i = Math.floor(Math.random() * a--);
+    temp = array[a];
+    array[a] = array[i];
+    array[i] = temp;
+  }
+  return array;
+};
 
+const listAlbums = () => {
+  rows = document.querySelectorAll(".rows");
+  rows.forEach((row) => (row.innerHTML = ""));
+  let random_list = randomizeArray(global_cards_array).slice(0, 20);
+  row.innerHTML = random_list.join("");
+};
+
+// ON WINDOW LOAD
 window.onload = function () {
-  loadList("queen");
-  loadList_("metallica");
-  loadList("eminem");
+  loadList("davidbowie", row);
+  loadList("metallica", row1);
+  loadList("eminem", row2);
+
+  //dynamically generated buttons
+  let btn = document.createElement("button");
+  btn.classList.add("btn", "btn-dark");
+  btn.innerText = "display random list";
+  btn.addEventListener("click", listAlbums);
+  listButton.appendChild(btn);
 
   /////////---------MOBILE NAV TOGGLE IN INDEX----------//////////////
   hamburger?.addEventListener("click", displayMobileMenu);
